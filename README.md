@@ -35,20 +35,6 @@ Each plugin is a themed unit: everything in it belongs to one domain, and it ins
 as a whole. Skills inside a plugin are namespaced by the plugin name, which is why the
 `security-grill` skill is invoked as `/security:security-grill`.
 
-## Adding a plugin
-
-1. Create `plugins/<name>/.claude-plugin/plugin.json` (only `name` is required; a
-   description, version, license and keywords make it discoverable).
-2. Put its skills under `plugins/<name>/skills/<skill>/SKILL.md` - they are discovered
-   automatically, no registration needed. Commands, agents, hooks and MCP servers live
-   alongside in `commands/`, `agents/`, `hooks/hooks.json` and `.mcp.json`.
-3. Add one entry to the `plugins` array in `.claude-plugin/marketplace.json`.
-4. Write `plugins/<name>/README.md`.
-5. Run `claude plugin validate . --strict` before pushing. CI runs the same check.
-
-Renaming a plugin breaks it for everyone who installed it - use the marketplace
-`renames` map instead.
-
 ## License
 
 [MIT](LICENSE).
