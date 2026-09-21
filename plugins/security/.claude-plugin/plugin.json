@@ -1,0 +1,10 @@
+{
+  "name": "security",
+  "description": "Security review tooling. Ships a harsh, persona-driven security interrogation of a diff, PR, or file.",
+  "version": "1.0.0",
+  "author": { "name": "David Öhman" },
+  "homepage": "https://github.com/Dohmanlechx/claude-toolkit",
+  "repository": "https://github.com/Dohmanlechx/claude-toolkit",
+  "license": "MIT",
+  "keywords": ["security", "code-review", "secrets"]
+}

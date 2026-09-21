@@ -1,0 +1,20 @@
+{
+  "name": "claude-toolkit",
+  "owner": {
+    "name": "David Öhman"
+  },
+  "description": "David Öhman's Claude Code plugins - installable, themed one plugin per domain.",
+  "plugins": [
+    {
+      "name": "security",
+      "source": "./plugins/security",
+      "description": "Security review tooling for Claude Code.",
+      "category": "security",
+      "keywords": [
+        "security",
+        "code-review",
+        "secrets"
+      ]
+    }
+  ]
+}
