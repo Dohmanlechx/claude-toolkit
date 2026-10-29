@@ -1,0 +1,669 @@
+<title>Coffee Order Field Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Fictional sample content (an invented "brewbot" repo). Layout: a sticker-book walk through one PR - hero ticket, playable order journey, menu board of endpoints, trap wall, rulebook, file shelf. */
+:root {
+  --bg: #F4F2FF;
+  --surface: #FFFFFF;
+  --ink: #1D1838;
+  --muted: #5E5880;
+  --line: #1D1838;
+  --sun: #FFC21A;
+  --tomato: #FF5A3C;
+  --pickle: #22A866;
+  --sky: #3F74F5;
+  --grape: #8A5CF6;
+  --sun-soft: #FFF1C7;
+  --tomato-soft: #FFE1DA;
+  --pickle-soft: #D7F5E5;
+  --sky-soft: #DFE8FF;
+  --grape-soft: #ECE3FF;
+  --on-color: #1D1838;
+  --shadow: 4px 4px 0 var(--line);
+  --f-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14112A; --surface: #211C40; --ink: #F3F0FF; --muted: #B4ACD9; --line: #0A0818;
+    --sun: #FFCB3D; --tomato: #FF7558; --pickle: #3CCB85; --sky: #6E95FF; --grape: #A685FF;
+    --sun-soft: #3D3214; --tomato-soft: #44201B; --pickle-soft: #153A29; --sky-soft: #1C2A55; --grape-soft: #2D2155;
+    --on-color: #14112A; --shadow: 4px 4px 0 #000; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14112A; --surface: #211C40; --ink: #F3F0FF; --muted: #B4ACD9; --line: #0A0818;
+  --sun: #FFCB3D; --tomato: #FF7558; --pickle: #3CCB85; --sky: #6E95FF; --grape: #A685FF;
+  --sun-soft: #3D3214; --tomato-soft: #44201B; --pickle-soft: #153A29; --sky-soft: #1C2A55; --grape-soft: #2D2155;
+  --on-color: #14112A; --shadow: 4px 4px 0 #000; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  background-image: radial-gradient(color-mix(in srgb, var(--grape) 18%, transparent) 1.2px, transparent 1.3px);
+  background-size: 22px 22px;
+}
+.wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-block: 32px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid;
+  gap: 64px;
+}
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.05; }
+h2 { font-size: clamp(1.9rem, 4.4vw, 2.8rem); font-weight: 800; letter-spacing: -0.02em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--f-mono); font-size: 0.86em; }
+code { background: var(--grape-soft); padding: 0.08em 0.35em; border-radius: 5px; overflow-wrap: anywhere; }
+a { color: var(--sky); font-weight: 600; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+
+.eyebrow {
+  font-family: var(--f-mono); font-size: 0.78rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+}
+.sec-head { display: grid; gap: 10px; max-width: 68ch; }
+.sec-head p { color: var(--muted); font-size: 1.05rem; }
+.sticker {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+/* ---------- hero ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+.hero-text { display: grid; gap: 18px; min-width: 0; }
+.hero h1 { font-size: clamp(2.6rem, 7vw, 4.6rem); font-weight: 800; letter-spacing: -0.035em; }
+.hero h1 .hl { background: var(--sun); color: var(--on-color); padding: 0 0.14em; border-radius: 10px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.hero .lede { font-size: 1.2rem; max-width: 52ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--f-mono); font-size: 0.78rem; font-weight: 600;
+  border: 2px solid var(--line); border-radius: 999px; padding: 4px 11px;
+  background: var(--surface); color: var(--ink);
+}
+.chip.sun { background: var(--sun); color: var(--on-color); }
+.chip.pickle { background: var(--pickle); color: var(--on-color); }
+.chip.sky { background: var(--sky); color: var(--on-color); }
+
+.ticket { padding: 22px 22px 18px; display: grid; gap: 14px; transform: rotate(1.6deg); position: relative; }
+.ticket::before, .ticket::after {
+  content: ""; position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--line); transform: translateY(-50%);
+}
+.ticket::before { left: -13px; clip-path: inset(0 0 0 50%); }
+.ticket::after { right: -13px; clip-path: inset(0 50% 0 0); }
+.ticket-row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-variant-numeric: tabular-nums; }
+.ticket-row .k { color: var(--muted); font-size: 0.9rem; }
+.ticket-row .v { font-family: var(--f-mono); font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.ticket hr { border: 0; border-top: 2px dashed color-mix(in srgb, var(--ink) 35%, transparent); margin: 2px 0; width: 100%; }
+.big-num { display: flex; gap: 18px; flex-wrap: wrap; }
+.big-num div { display: grid; }
+.big-num b { font-family: var(--f-display); font-size: 2.4rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.big-num .add b { color: var(--pickle); }
+.big-num .del b { color: var(--tomato); }
+.big-num span { font-size: 0.8rem; color: var(--muted); }
+
+/* ---------- journey ---------- */
+.journey { display: grid; gap: 22px; }
+.picker { display: flex; flex-wrap: wrap; gap: 10px; }
+.pick {
+  font: 700 0.95rem/1.2 var(--f-body);
+  color: var(--ink); background: var(--surface);
+  border: 2px solid var(--line); border-radius: 999px;
+  padding: 9px 16px; cursor: pointer;
+  box-shadow: 3px 3px 0 var(--line);
+  transition: transform .12s ease, box-shadow .12s ease, background .12s;
+}
+.pick:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--line); }
+.pick:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); }
+.pick[aria-pressed="true"] { background: var(--sun); color: var(--on-color); }
+
+.board { padding: 22px; display: grid; gap: 20px; }
+.board-top { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: flex-start; }
+.board-top .story { display: grid; gap: 6px; max-width: 60ch; min-width: 0; }
+.board-top h3 { font-size: 1.5rem; }
+.board-top .story p { color: var(--muted); }
+.controls { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  font: 700 0.9rem/1 var(--f-body); color: var(--on-color);
+  background: var(--pickle); border: 2px solid var(--line); border-radius: 12px;
+  padding: 10px 14px; cursor: pointer; box-shadow: 3px 3px 0 var(--line);
+}
+.btn.ghost { background: var(--surface); color: var(--ink); }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--line); }
+
+.rail { display: flex; flex-wrap: wrap; gap: 6px; }
+.state {
+  font-family: var(--f-mono); font-size: 0.74rem; font-weight: 600;
+  padding: 4px 9px; border-radius: 8px; border: 2px dashed color-mix(in srgb, var(--ink) 30%, transparent);
+  color: var(--muted); transition: all .2s ease;
+}
+.state.visited { border-style: solid; border-color: var(--line); color: var(--ink); background: var(--grape-soft); }
+.state.now { background: var(--grape); color: var(--on-color); border-color: var(--line); border-style: solid; transform: scale(1.08); }
+.state.now.good { background: var(--pickle); }
+.state.now.bad { background: var(--tomato); }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; position: relative; }
+.step {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start;
+  padding: 12px 14px; border-radius: 14px; border: 2px solid transparent;
+  transition: background .25s ease, border-color .25s ease, opacity .25s ease;
+  cursor: pointer;
+}
+.step:hover { background: color-mix(in srgb, var(--grape-soft) 50%, transparent); }
+.step.done { opacity: 0.62; }
+.step.current { background: var(--sun-soft); border-color: var(--line); opacity: 1; }
+.dot {
+  width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line);
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 1.05rem;
+  color: var(--on-color); position: relative; font-variant-numeric: tabular-nums;
+}
+.step:not(:last-child) .dot::after {
+  content: ""; position: absolute; top: calc(100% + 2px); left: 50%; width: 2px; height: 26px;
+  background: repeating-linear-gradient(to bottom, var(--ink) 0 4px, transparent 4px 8px); opacity: .35;
+}
+.k-screen .dot { background: var(--sky); }
+.k-client .dot { background: var(--grape); }
+.k-core .dot { background: var(--sun); }
+.k-api .dot { background: var(--tomato); }
+.k-wait .dot { background: var(--pickle); }
+.k-end-good .dot { background: var(--pickle); }
+.k-end-bad .dot { background: var(--tomato); }
+.step-body { display: grid; gap: 4px; min-width: 0; }
+.step-title { font-weight: 700; font-size: 1.04rem; overflow-wrap: anywhere; }
+.step-title code { font-size: 0.82em; }
+.step-detail { color: var(--muted); font-size: 0.95rem; }
+.tag {
+  justify-self: start; font-family: var(--f-mono); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 2px 7px; border-radius: 6px; color: var(--ink);
+}
+.k-screen .tag { background: var(--sky-soft); }
+.k-client .tag { background: var(--grape-soft); }
+.k-core .tag { background: var(--sun-soft); }
+.k-api .tag { background: var(--tomato-soft); }
+.k-wait .tag, .k-end-good .tag { background: var(--pickle-soft); }
+.k-end-bad .tag { background: var(--tomato-soft); }
+.step.current.k-end-bad { animation: wobble .5s ease; }
+@keyframes wobble { 0%,100% { transform: none; } 25% { transform: translateX(-6px) rotate(-1deg); } 75% { transform: translateX(6px) rotate(1deg); } }
+
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line); display: inline-block; }
+
+/* ---------- menu board ---------- */
+.menu { padding: 24px; display: grid; gap: 4px; background: var(--ink); color: var(--bg); border-color: var(--line); }
+.menu .eyebrow { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.menu-item {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 6px 14px; align-items: baseline;
+  padding: 14px 0; border-bottom: 2px dashed color-mix(in srgb, var(--bg) 22%, transparent);
+}
+.menu-item:last-child { border-bottom: 0; }
+.verb {
+  font-family: var(--f-mono); font-weight: 600; font-size: 0.78rem; padding: 3px 8px; border-radius: 6px;
+  color: var(--on-color);
+}
+.verb.post { background: var(--pickle); }
+.verb.patch { background: var(--sun); }
+.verb.get { background: var(--sky); }
+.path { font-family: var(--f-mono); font-size: 0.92rem; overflow-wrap: anywhere; min-width: 0; }
+.who { font-family: var(--f-display); font-weight: 700; color: var(--sun); white-space: nowrap; }
+.menu-item p { grid-column: 2 / -1; color: color-mix(in srgb, var(--bg) 75%, transparent); font-size: 0.93rem; }
+.menu-item p code { background: color-mix(in srgb, var(--bg) 14%, transparent); color: var(--bg); }
+
+.timers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.timer { padding: 20px; display: grid; gap: 6px; }
+.timer b { font-family: var(--f-display); font-size: 3rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.timer:nth-child(1) { background: var(--pickle-soft); }
+.timer:nth-child(2) { background: var(--sky-soft); }
+.timer:nth-child(3) { background: var(--sun-soft); }
+.timer .mono { color: var(--muted); }
+
+/* ---------- traps ---------- */
+.traps { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
+.trap { padding: 18px 18px 16px; display: grid; gap: 10px; align-content: start; }
+.trap:nth-child(4n+1) { transform: rotate(-0.7deg); }
+.trap:nth-child(4n+3) { transform: rotate(0.6deg); }
+.trap .sev {
+  justify-self: start; font-family: var(--f-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 6px; border: 2px solid var(--line); color: var(--on-color);
+}
+.sev.ouch { background: var(--tomato); }
+.sev.sneaky { background: var(--grape); }
+.sev.nice { background: var(--pickle); }
+.trap h3 { font-size: 1.08rem; line-height: 1.25; }
+.trap p { color: var(--muted); font-size: 0.95rem; }
+.trap .src { font-family: var(--f-mono); font-size: 0.74rem; color: var(--muted); }
+
+/* ---------- rules ---------- */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; counter-reset: r; }
+.rule { padding: 16px; display: grid; gap: 6px; align-content: start; counter-increment: r; position: relative; }
+.rule::before {
+  content: counter(r); position: absolute; top: -12px; right: 12px;
+  width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--line); background: var(--sun); color: var(--on-color);
+  display: grid; place-items: center; font: 800 0.95rem/1 var(--f-display);
+}
+.rule h3 { font-size: 1.02rem; }
+.rule p { font-size: 0.92rem; color: var(--muted); }
+.types { display: flex; flex-wrap: wrap; gap: 10px; }
+.type { padding: 12px 14px; display: grid; gap: 2px; flex: 1 1 200px; min-width: 0; }
+.type b { font-family: var(--f-display); font-size: 1.05rem; }
+.type span { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- files ---------- */
+.shelf { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; }
+.files { padding: 8px 0; overflow: hidden; }
+.file {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 8px 16px; font-variant-numeric: tabular-nums;
+}
+.file + .file { border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+.file .name { font-family: var(--f-mono); font-size: 0.82rem; overflow-wrap: anywhere; min-width: 0; }
+.file .name small { color: var(--muted); display: block; font-size: 0.72rem; }
+.bar { display: flex; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: 0.78rem; }
+.bar .plus { color: var(--pickle); font-weight: 600; }
+.bar .minus { color: var(--tomato); font-weight: 600; }
+.bar i { display: block; height: 10px; border-radius: 4px; background: var(--pickle); border: 1.5px solid var(--line); }
+.new-badge { font-family: var(--f-mono); font-size: 0.66rem; font-weight: 600; background: var(--sun); color: var(--on-color); border-radius: 5px; padding: 1px 5px; margin-left: 6px; }
+.side-notes { display: grid; gap: 14px; align-content: start; }
+.note { padding: 16px; display: grid; gap: 6px; }
+.note p { color: var(--muted); font-size: 0.94rem; }
+
+footer { text-align: center; color: var(--muted); display: grid; gap: 6px; justify-items: center; }
+footer .chip { font-size: 0.85rem; }
+
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; width: 100%; height: 100%; }
+
+@media (max-width: 760px) {
+  .hero, .shelf { grid-template-columns: minmax(0, 1fr); }
+  .ticket { transform: none; }
+  .menu-item { grid-template-columns: auto minmax(0, 1fr); }
+  .menu-item .who { grid-column: 2; }
+  .step { grid-template-columns: 36px minmax(0, 1fr); gap: 10px; padding: 10px; }
+  .dot { width: 36px; height: 36px; font-size: 0.9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-text">
+      <span class="eyebrow">example/brewbot &middot; PR #42</span>
+      <h1>How a coffee order <span class="hl">gets paid</span>, finally written down</h1>
+      <p class="lede">This PR adds 7 docs that follow one order from "tap to pay" to "grab your cup". It covers bank checks, office tabs, free rewards and the traps along the way. No production code changed. It's all docs.</p>
+      <div class="chips">
+        <span class="chip sun">docs</span>
+        <span class="chip pickle">internal-change</span>
+        <span class="chip">BREW-128</span>
+        <span class="chip">docs/order-flow &rarr; main</span>
+      </div>
+    </div>
+    <aside class="ticket sticker" aria-label="PR at a glance">
+      <span class="eyebrow">Order ticket</span>
+      <div class="ticket-row"><span class="k">Author</span><span class="v">sam-example</span></div>
+      <div class="ticket-row"><span class="k">Files</span><span class="v">10</span></div>
+      <div class="ticket-row"><span class="k">New docs</span><span class="v">7</span></div>
+      <div class="ticket-row"><span class="k">Diagrams</span><span class="v">6</span></div>
+      <div class="ticket-row"><span class="k">Gotchas</span><span class="v">12</span></div>
+      <hr>
+      <div class="big-num">
+        <div class="add"><b>+612</b><span>lines added</span></div>
+        <div class="del"><b>&minus;4</b><span>lines removed</span></div>
+      </div>
+      <div class="ticket-row"><span class="k">Status</span><span class="v">OPEN &middot; all docs draft</span></div>
+    </aside>
+  </header>
+
+  <!-- JOURNEY -->
+  <section class="journey" aria-labelledby="j-h">
+    <div class="sec-head">
+      <span class="eyebrow">The new order flow doc, playable</span>
+      <h2 id="j-h">Pick an order, watch it travel</h2>
+      <p>The flow doc defines 7 states. Pick a scenario and press Play. Each stop names the real class, call or endpoint the docs describe.</p>
+    </div>
+
+    <div class="picker" role="group" aria-label="Scenario">
+      <button class="pick" data-s="card">Plain card</button>
+      <button class="pick" data-s="free">Free reward</button>
+      <button class="pick" data-s="check">Card with bank check</button>
+      <button class="pick" data-s="tab">Office tab</button>
+      <button class="pick" data-s="declined">Card declined</button>
+    </div>
+
+    <div class="board sticker">
+      <div class="board-top">
+        <div class="story">
+          <h3 id="s-name"></h3>
+          <p id="s-blurb"></p>
+        </div>
+        <div class="controls">
+          <button class="btn" id="play">Play</button>
+          <button class="btn ghost" id="next">Step</button>
+          <button class="btn ghost" id="reset">Reset</button>
+        </div>
+      </div>
+      <div class="rail" id="rail" aria-label="Flow states"></div>
+      <ol class="steps" id="steps"></ol>
+      <div class="legend">
+        <span><i style="background:var(--sky)"></i>Screen</span>
+        <span><i style="background:var(--grape)"></i>Client app</span>
+        <span><i style="background:var(--sun)"></i>Shared core</span>
+        <span><i style="background:var(--tomato)"></i>Backend call</span>
+        <span><i style="background:var(--pickle)"></i>Waiting / polling</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU -->
+  <section aria-labelledby="m-h" style="display:grid;gap:22px">
+    <div class="sec-head">
+      <span class="eyebrow">The 4 API call docs</span>
+      <h2 id="m-h">Today's menu: four requests</h2>
+      <p>Every backend request in the flow, with what each answer does.</p>
+    </div>
+    <div class="menu sticker">
+      <span class="eyebrow">Served by OrderRepository</span>
+      <div class="menu-item">
+        <span class="verb post">POST</span><span class="path">/v1/orders</span><span class="who">Create Order</span>
+        <p>201 saves the order. A free order (<code>total</code> 0) skips payment. <code>AwaitingPayment</code> moves on to payment. Any other state throws.</p>
+      </div>
+      <div class="menu-item">
+        <span class="verb patch">PATCH</span><span class="path">/v1/orders/{orderId}/payment</span><span class="who">Pay Order</span>
+        <p>Always 200, so the body decides. <code>Declined</code> in the body means declined, even with <code>ok: true</code>. A <code>bankCheck</code> block means the bank wants a challenge.</p>
+      </div>
+      <div class="menu-item">
+        <span class="verb get">GET</span><span class="path">/v1/orders/{orderId}</span><span class="who">Order Status</span>
+        <p>The polling call. Used while a manager approves a tab and while the barista brews.</p>
+      </div>
+      <div class="menu-item">
+        <span class="verb patch">PATCH</span><span class="path">/v1/orders/{orderId}/state</span><span class="who">Update State</span>
+        <p><code>Cancelled</code> when a tab approval times out. 409 means the barista already started.</p>
+      </div>
+    </div>
+
+    <div class="timers">
+      <div class="timer sticker">
+        <span class="eyebrow">Tab approval timeout</span>
+        <b>5m</b>
+        <span class="mono">TAB_APPROVAL_TIMEOUT</span>
+      </div>
+      <div class="timer sticker">
+        <span class="eyebrow">Brew status poll</span>
+        <b>3s</b>
+        <span class="mono">BREW_POLL_INTERVAL</span>
+      </div>
+      <div class="timer sticker">
+        <span class="eyebrow">Cup held at the counter</span>
+        <b>20m</b>
+        <span class="mono">PICKUP_HOLD</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAPS -->
+  <section aria-labelledby="t-h" style="display:grid;gap:22px">
+    <div class="sec-head">
+      <span class="eyebrow">Picked from the 12 gotchas</span>
+      <h2 id="t-h">Watch your step</h2>
+      <p>The docs list every surprise they found in the code. These are the ones most likely to cause a bug.</p>
+    </div>
+    <div class="traps">
+      <article class="trap sticker">
+        <span class="sev ouch">Spinner forever</span>
+        <h3>A throw inside <code>onPaid</code> is never caught</h3>
+        <p>If the receipt call throws, the cart isn't cleared, <code>Completed</code> never arrives, and the app keeps spinning.</p>
+        <span class="src">pay-order.md</span>
+      </article>
+      <article class="trap sticker">
+        <span class="sev sneaky">Plot twist</span>
+        <h3>Declined arrives as a 200</h3>
+        <p>The payment endpoint returns 200 whenever the order is valid. The state in the body wins over <code>ok</code>.</p>
+        <span class="src">pay-order.md</span>
+      </article>
+      <article class="trap sticker">
+        <span class="sev ouch">Missed it</span>
+        <h3>Collect <code>orderStatus</code> before <code>placeOrder</code> runs</h3>
+        <p>The flow doesn't replay old values. A screen that starts listening late misses <code>Completed</code>.</p>
+        <span class="src">order-status-screen.md</span>
+      </article>
+      <article class="trap sticker">
+        <span class="sev nice">Good news</span>
+        <h3>A retried payment doesn't create a second order</h3>
+        <p><code>placeOrder</code> finds the unpaid order and pays that one.</p>
+        <span class="src">create-order.md</span>
+      </article>
+      <article class="trap sticker">
+        <span class="sev sneaky">Side effect</span>
+        <h3><code>cancelPolling</code> also cancels the order</h3>
+        <p>Stopping the poll alone would leave the tab request open. A failed cancel is only logged and never retried.</p>
+        <span class="src">office-tab.md</span>
+      </article>
+      <article class="trap sticker">
+        <span class="sev nice">Keeps going</span>
+        <h3>Tab polling outlives the screen</h3>
+        <p>It runs on the repository's scope, so leaving the screen doesn't stop it.</p>
+        <span class="src">office-tab.md</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- RULES -->
+  <section aria-labelledby="r-h" style="display:grid;gap:22px">
+    <div class="sec-head">
+      <span class="eyebrow">style-guide.md, new section</span>
+      <h2 id="r-h">New house rules for sequence diagrams</h2>
+      <p>The PR also changes the docs style guide, so future diagrams are drawn the same way.</p>
+    </div>
+    <div class="rules">
+      <div class="rule sticker"><h3>Real names</h3><p>Every participant is a real class, with no alias.</p></div>
+      <div class="rule sticker"><h3>Real calls</h3><p>Every message is a method that exists on its target. Leave out logging and getters.</p></div>
+      <div class="rule sticker"><h3>Returns only when used</h3><p>Draw a <code>--&gt;&gt;</code> only when something later uses the value.</p></div>
+      <div class="rule sticker"><h3>Branches that matter</h3><p>Use <code>alt</code>/<code>opt</code> only when the outcome changes, and label them in plain words.</p></div>
+      <div class="rule sticker"><h3>One flow per diagram</h3><p>About 15 messages max. Internals get their own diagram.</p></div>
+      <div class="rule sticker"><h3>Don't guess</h3><p>Anything that can't be checked goes in Gotchas, marked unverified.</p></div>
+    </div>
+    <div class="types">
+      <div class="type sticker"><b>Flow</b><span>An overview whose steps link to parts</span></div>
+      <div class="type sticker"><b>Screen</b><span>A screen shown during a step</span></div>
+      <div class="type sticker"><b>API Call</b><span>A request, with the responses it handles</span></div>
+    </div>
+  </section>
+
+  <!-- FILES -->
+  <section aria-labelledby="f-h" style="display:grid;gap:22px">
+    <div class="sec-head">
+      <span class="eyebrow">Every file in the diff</span>
+      <h2 id="f-h">The shelf</h2>
+    </div>
+    <div class="shelf">
+      <div class="files sticker" id="files"></div>
+      <div class="side-notes">
+        <div class="note sticker" style="background:var(--sky-soft)">
+          <h3>New row in README.md</h3>
+          <p>"Change how orders get paid" now points readers to <code>order-flow.md</code> before they read any code.</p>
+        </div>
+        <div class="note sticker" style="background:var(--sun-soft)">
+          <h3>New directory</h3>
+          <p><code>docs/orders/</code>, with its own index.</p>
+        </div>
+        <div class="note sticker" style="background:var(--grape-soft)">
+          <h3>All draft, all cited</h3>
+          <p>Each doc is <code>status: draft</code> and cites its source files as footnotes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <a class="chip sky" href="https://example.com/brewbot/pull/42">Open PR #42</a>
+    <span>Built from the PR diff on 2026-10-29.</span>
+  </footer>
+</main>
+
+<script>
+const STATES = ["submitting","awaiting_approval","bank_check","paying","brewing","succeeded","failed"];
+const TAGS = { screen: "Screen", client: "Client app", core: "Shared core", api: "Backend", wait: "Waiting", "end-good": "Succeeded", "end-bad": "Failed" };
+
+const APPEAR = { k: "screen", t: "Order status screen appears", d: "<code>ViewAppeared</code> starts collecting <code>orderStatus</code>.", s: "submitting" };
+const PLACE = { k: "client", t: "App calls <code>placeOrder</code>", d: "<code>CheckoutViewModel</code> hands off to <code>OrderRepository</code>, which emits <code>Started</code>.", s: "submitting" };
+const POST = { k: "api", t: "<code>POST /v1/orders</code>", d: "The order comes back <code>AwaitingPayment</code> and is saved as the active order.", s: "submitting" };
+const BREW = { k: "wait", t: "Poll until the cup is ready", d: "<code>GET /v1/orders/{id}</code> every 3s until the state is <code>Ready</code>.", s: "brewing" };
+const DONE = { k: "end-good", t: "\"Grab your cup\"", d: "<code>onPaid</code> clears the cart and emits <code>Completed</code>. The counter holds the cup for 20m.", s: "succeeded" };
+
+const SCENARIOS = {
+  card: {
+    name: "Plain card", blurb: "The happy path: no bank check, no tab, no reward.",
+    steps: [APPEAR, PLACE, POST,
+      { k: "api", t: "<code>PATCH /v1/orders/{id}/payment</code>", d: "Accepted, with no <code>bankCheck</code> block. The payment went through.", s: "paying" },
+      BREW, DONE]
+  },
+  free: {
+    name: "Free reward", blurb: "A loyalty reward covers the whole cup, so there's nothing to charge.",
+    steps: [APPEAR, PLACE,
+      { k: "api", t: "<code>POST /v1/orders</code>", d: "Comes back with <code>total</code> 0. Payment is skipped.", s: "submitting" },
+      BREW, DONE]
+  },
+  check: {
+    name: "Card with bank check", blurb: "The bank wants a challenge. The app shows it and the shared core sends the result.",
+    steps: [APPEAR, PLACE, POST,
+      { k: "api", t: "<code>PATCH .../payment</code>", d: "OK, with a <code>bankCheck</code> block. The card needs a challenge.", s: "bank_check" },
+      { k: "client", t: "Bank challenge sheet", d: "The app shows the bank's challenge and returns the result.", s: "bank_check" },
+      { k: "core", t: "<code>submitBankCheck</code>", d: "Sends the result and removes the challenge so it can't run twice.", s: "paying" },
+      BREW, DONE]
+  },
+  tab: {
+    name: "Office tab", blurb: "The order goes on the office tab, so a manager approves it while the app waits.",
+    steps: [APPEAR, PLACE, POST,
+      { k: "api", t: "<code>PATCH .../payment</code>", d: "Tab payments come back <code>AwaitingApproval</code>.", s: "awaiting_approval" },
+      { k: "wait", t: "Poll the order status", d: "For up to 5m. Times out into a <code>Cancelled</code> patch.", s: "awaiting_approval" },
+      { k: "core", t: "Approved", d: "The manager says yes and the order moves on.", s: "paying" },
+      BREW, DONE]
+  },
+  declined: {
+    name: "Card declined", blurb: "Not every order ends well. This one fails, but cleans up after itself.",
+    steps: [APPEAR, PLACE, POST,
+      { k: "api", t: "<code>PATCH .../payment</code>", d: "Returns 200, but the state is <code>Declined</code>. The state wins over <code>ok</code>.", s: "paying" },
+      { k: "core", t: "<code>PaymentDeclined</code>", d: "Nothing is saved. The repository clears the active order.", s: "paying" },
+      { k: "end-bad", t: "Back to checkout", d: "Dismissing the error pops back to the cart.", s: "failed" }]
+  }
+};
+
+const FILES = [
+  ["order-flow.md","docs/orders/",142,0,true],["create-order.md","docs/orders/",96,0,true],
+  ["pay-order.md","docs/orders/",88,0,true],["office-tab.md","docs/orders/",74,0,true],
+  ["bank-check.md","docs/orders/",61,0,true],["order-status-screen.md","docs/orders/",59,0,true],
+  ["index.md","docs/orders/",12,0,true],["style-guide.md","docs/",66,2,false],
+  ["README.md","root",9,2,false],["log.md","docs/",5,0,false]
+];
+
+const $ = s => document.querySelector(s);
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let cur = "card", idx = 0, timer = null;
+
+function renderFiles() {
+  const max = Math.max(...FILES.map(f => f[2]));
+  $("#files").innerHTML = FILES.map(([n, dir, a, d, isNew]) =>
+    `<div class="file"><span class="name">${n}${isNew ? '<span class="new-badge">NEW</span>' : ""}<small>${dir}</small></span>
+     <span class="bar"><i style="width:${Math.max(4, Math.round(a / max * 90))}px"></i><span class="plus">+${a}</span>${d ? `<span class="minus">&minus;${d}</span>` : ""}</span></div>`
+  ).join("");
+}
+
+function renderScenario() {
+  const sc = SCENARIOS[cur];
+  $("#s-name").textContent = sc.name;
+  $("#s-blurb").textContent = sc.blurb;
+  document.querySelectorAll(".pick").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === cur));
+  $("#steps").innerHTML = sc.steps.map((st, i) =>
+    `<li class="step k-${st.k}" data-i="${i}"><span class="dot">${i + 1}</span>
+      <div class="step-body"><span class="tag">${TAGS[st.k]}</span><span class="step-title">${st.t}</span><span class="step-detail">${st.d}</span></div></li>`
+  ).join("");
+  $("#steps").querySelectorAll(".step").forEach(el => el.addEventListener("click", () => { stop(); go(+el.dataset.i); }));
+  go(0, true);
+}
+
+function go(i, quiet) {
+  const sc = SCENARIOS[cur];
+  idx = Math.max(0, Math.min(i, sc.steps.length - 1));
+  $("#steps").querySelectorAll(".step").forEach((el, j) => {
+    el.classList.toggle("done", j < idx);
+    el.classList.toggle("current", j === idx);
+  });
+  const visited = new Set(sc.steps.slice(0, idx + 1).map(s => s.s));
+  const now = sc.steps[idx].s;
+  $("#rail").innerHTML = STATES.map(s => {
+    const cls = ["state"];
+    if (visited.has(s)) cls.push("visited");
+    if (s === now) { cls.push("now"); if (s === "succeeded") cls.push("good"); if (s === "failed") cls.push("bad"); }
+    return `<span class="${cls.join(" ")}">${s}</span>`;
+  }).join("");
+  if (!quiet && idx === sc.steps.length - 1 && now === "succeeded") confetti();
+}
+
+function stop() { clearInterval(timer); timer = null; $("#play").textContent = "Play"; }
+function play() {
+  if (timer) return stop();
+  const last = SCENARIOS[cur].steps.length - 1;
+  if (idx >= last) go(0, true);
+  $("#play").textContent = "Pause";
+  timer = setInterval(() => {
+    if (idx >= last) return stop();
+    go(idx + 1);
+    if (idx >= last) stop();
+  }, reduced ? 400 : 1100);
+}
+
+/* confetti */
+const cv = $("#confetti"), cx = cv.getContext("2d");
+let parts = [], raf = null;
+function confetti() {
+  if (reduced) return;
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  const cs = getComputedStyle(document.documentElement);
+  const cols = ["--sun", "--tomato", "--pickle", "--sky", "--grape"].map(c => cs.getPropertyValue(c).trim());
+  for (let i = 0; i < 160; i++) parts.push({
+    x: cv.width / 2 + (Math.random() - .5) * cv.width * .3, y: cv.height * .55,
+    vx: (Math.random() - .5) * 26, vy: -Math.random() * 30 - 12, r: Math.random() * 6 + 5,
+    a: Math.random() * 6, va: (Math.random() - .5) * .4, c: cols[i % cols.length], life: 0
+  });
+  if (!raf) tick();
+}
+function tick() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  parts.forEach(p => {
+    p.vy += .9; p.vx *= .985; p.x += p.vx; p.y += p.vy; p.a += p.va; p.life++;
+    cx.save(); cx.translate(p.x, p.y); cx.rotate(p.a); cx.fillStyle = p.c;
+    cx.fillRect(-p.r * devicePixelRatio / 2, -p.r * devicePixelRatio / 4, p.r * devicePixelRatio, p.r * devicePixelRatio / 2);
+    cx.restore();
+  });
+  parts = parts.filter(p => p.y < cv.height + 40 && p.life < 240);
+  raf = parts.length ? requestAnimationFrame(tick) : (cx.clearRect(0, 0, cv.width, cv.height), null);
+}
+
+document.querySelectorAll(".pick").forEach(b => b.addEventListener("click", () => { stop(); cur = b.dataset.s; renderScenario(); }));
+$("#play").addEventListener("click", play);
+$("#next").addEventListener("click", () => { stop(); go(idx + 1); });
+$("#reset").addEventListener("click", () => { stop(); go(0, true); });
+
+renderFiles();
+renderScenario();
+</script>

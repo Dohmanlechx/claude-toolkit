@@ -18,6 +18,7 @@ Then browse and install with `/plugin`, or install one directly:
 | Plugin | What it gives you |
 | --- | --- |
 | [`security`](plugins/security) | `/security:security-grill` - a grumpy veteran security reviewer reads your diff, PR or file, then interrogates you about it one question at a time and writes up the answers. |
+| [`explainers`](plugins/explainers) | `/explainers:make-fun` - turns a PR, doc, ticket, notes or a URL into one playful, interactive HTML page that is fun to read. |
 
 More plugins get added here over time, one theme at a time.
 

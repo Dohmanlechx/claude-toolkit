@@ -15,6 +15,18 @@
         "code-review",
         "secrets"
       ]
+    },
+    {
+      "name": "explainers",
+      "source": "./plugins/explainers",
+      "description": "Turn PRs, docs, tickets and notes into joyful, interactive HTML explainer pages.",
+      "category": "productivity",
+      "keywords": [
+        "html",
+        "explainer",
+        "docs",
+        "visualization"
+      ]
     }
   ]
 }

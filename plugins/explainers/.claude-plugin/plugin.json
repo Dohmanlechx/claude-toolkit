@@ -1,0 +1,10 @@
+{
+  "name": "explainers",
+  "description": "Turn PRs, docs, tickets and notes into pages people enjoy reading. Ships make-fun, a playful interactive HTML explainer.",
+  "version": "1.0.0",
+  "author": { "name": "David Öhman" },
+  "homepage": "https://github.com/Dohmanlechx/claude-toolkit",
+  "repository": "https://github.com/Dohmanlechx/claude-toolkit",
+  "license": "MIT",
+  "keywords": ["html", "explainer", "docs", "visualization"]
+}
